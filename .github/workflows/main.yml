@@ -2,7 +2,8 @@ name: build hugo site on source & deploy to master
 
 on:
   push:
-    branches: [ source ]
+    branches:
+      - source
 
 jobs:
   deploy:
