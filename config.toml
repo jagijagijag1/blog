@@ -2,6 +2,7 @@ baseURL = "http://jagijagijag1.github.io/"
 languageCode = "ja-jp"
 title = "jagijagijag1 notes"
 theme = "hugo-future-imperfect-slim"
+publishDir = "docs"
 
 DefaultContentLanguage  = "en"
 paginate                = 3
