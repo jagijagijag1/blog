@@ -102,7 +102,7 @@ disableLanguages        = []
   [[menu.main]]
     name              = "Articles"
     identifier        = "articles"
-    url               = "articles/"
+    url               = "posts/"
     pre               = "<i class='far fa-newspaper'></i>"
     weight            = 3
 
