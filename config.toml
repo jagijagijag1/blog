@@ -7,7 +7,7 @@ publishDir = "docs"
 DefaultContentLanguage  = "en"
 paginate                = 3
 disqusShortname         = ""
-googleAnalytics         = ""
+googleAnalytics         = "UA-22200830-1"
 pluralizeListTitles     = false
 disableLanguages        = []
 
@@ -24,7 +24,7 @@ disableLanguages        = []
   highlightjs           = true
   highlightjsTheme      = "dark"
   highlightjsLang       = []
-  viewMorePostsLink     = "/blog/"
+  viewMorePostsLink     = "/posts/"
   readingTime           = false
   imageStretch          = ""
   removeBlur            = false
@@ -63,7 +63,7 @@ disableLanguages        = []
 
   [params.sidebar]
     # about               = "This theme was developed for Hugo static site generator."
-    postAmount          = 5
+    postAmount          = 3
     categories          = true
     categoriesByCount   = true
 
@@ -88,7 +88,7 @@ disableLanguages        = []
   [[menu.main]]
     name              = "Home"
     identifier        = "home"
-    url               = "/"
+    url               = ""
     pre               = "<i class='fa fa-home'></i>"
     weight            = 1
 
@@ -100,16 +100,16 @@ disableLanguages        = []
   #   weight            = 2
 
   [[menu.main]]
-    name              = "Blog"
-    identifier        = "blog"
-    url               = "/blog/"
+    name              = "Articles"
+    identifier        = "articles"
+    url               = "articles/"
     pre               = "<i class='far fa-newspaper'></i>"
     weight            = 3
 
   [[menu.main]]
     name              = "Categories"
     identifier        = "categories"
-    url               = "/categories/"
+    url               = "categories/"
     pre               = "<i class='fas fa-sitemap'></i>"
     weight            = 5
 
@@ -119,6 +119,13 @@ disableLanguages        = []
   #   url               = "/contact/"
   #   pre               = "<i class='far fa-envelope'></i>"
   #   weight            = 6
+
+  [[menu.main]]
+    name              = "Tags"
+    identifier        = "tags"
+    url               = "tags/"
+    pre               = "<i class='fas fa-tags'></i>"
+    weight            = 7
 
 [social]
   # Coding Communities
@@ -169,3 +176,4 @@ disableLanguages        = []
   mastodon              = ""
   # Email
   email                 = ""
+  pixela                = "@jagijagijag1"
