@@ -5,7 +5,7 @@ theme = "hugo-future-imperfect-slim"
 publishDir = "docs"
 
 DefaultContentLanguage  = "en"
-paginate                = 3
+paginate                = 5
 disqusShortname         = ""
 googleAnalytics         = "UA-22200830-1"
 pluralizeListTitles     = false
@@ -66,6 +66,8 @@ disableLanguages        = []
     postAmount          = 3
     categories          = true
     categoriesByCount   = true
+    pixelaAccessCounter = true
+    pixelaACGraphURL    = "https://pixe.la/v1/users/jagijagijag1/graphs/pomodoro?mode=short"
 
   [params.footer]
     rssFooter           = true
