@@ -1,0 +1,30 @@
+#site-sidebar ul,
+.stats ul li {
+  text-transform: none;
+}
+
+.nav {
+  text-transform: none;
+  letter-spacing: 0.2em;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-transform: none;
+  letter-spacing: 0.1em;
+  /*font-family: "Helvetica Neue", "Segoe UI", "Hiragino Kaku Gothic ProN",
+    "Hiragino Sans", Meiryo, sans-serif;*/
+  /*font-family: "Noto Serif JP", serif;*/
+}
+
+code {
+  font-family: Monaco, Inconsolata, Consolas, monospace;
+}
+
+.count-container > .count {
+  font-family: Monaco, Inconsolata, Consolas, monospace;
+}
