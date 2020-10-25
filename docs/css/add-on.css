@@ -28,3 +28,19 @@ code {
 .count-container > .count {
   font-family: Monaco, Inconsolata, Consolas, monospace;
 }
+
+pre.chroma code {
+  margin-top: -28px;
+  padding-top: 40px;
+  padding-bottom: 12px;
+}
+
+.code-name {
+  display: inline-block;
+  position: relative;
+  padding: 4px 8px;
+  background-color: lightgray;
+  color: #485a60;
+  font-size: 13px;
+  font-weight: 400;
+}
