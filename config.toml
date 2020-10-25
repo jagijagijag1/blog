@@ -69,7 +69,7 @@ disableLanguages        = []
     categories          = true
     categoriesByCount   = true
     pixelaAccessCounter = true
-    pixelaACGraphURL    = "https://pixe.la/v1/users/jagijagijag1/graphs/pomodoro?mode=short"
+    pixelaACGraphURL    = "https://pixe.la/v1/users/jagijagijag1/graphs/qrunch-pv?mode=short"
 
   [params.footer]
     rssFooter           = true
