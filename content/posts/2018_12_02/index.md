@@ -1,5 +1,5 @@
 ---
-title: '"あとで読む"をPixelaで可視化'
+title: 「あとで読む」をPixelaで可視化
 author: jagijagijag1
 date: 2018-12-02T10:54:22+0900
 tags:
