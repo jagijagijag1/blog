@@ -30,6 +30,8 @@ disableLanguages        = []
   removeBlur            = false
   socialShare           = ["twitter"]
   hideEmptyStats        = false
+  enableApplause        = true
+  applauseButtonColor   = "firebrick"
 
   [params.meta]
     description         = "jagijagijag1 tech notes."

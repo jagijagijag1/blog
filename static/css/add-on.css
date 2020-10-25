@@ -24,3 +24,7 @@ h6 {
 code {
   font-family: Monaco, Inconsolata, Consolas, monospace;
 }
+
+.count-container > .count {
+  font-family: Monaco, Inconsolata, Consolas, monospace;
+}
