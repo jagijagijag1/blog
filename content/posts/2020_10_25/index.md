@@ -7,7 +7,7 @@ tags:
 - GitHub
 - GitHub Actions
 categories:
-- tech note
+- dev note
 ---
 <!-- toc -->
 
