@@ -133,6 +133,13 @@ hasCJKLanguage = true
     pre               = "<i class='fas fa-tags'></i>"
     weight            = 7
 
+  [[menu.main]]
+    name              = "Tiny Notes"
+    identifier        = "tiny-notes"
+    url               = "https://jagijagijag1.github.io/tiny-notes/"
+    pre               = "<i class='fas fa-sticky-note'></i>"
+    weight            = 8
+
 [social]
   # Coding Communities
   github                = "jagijagijag1"
