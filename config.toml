@@ -11,6 +11,8 @@ googleAnalytics         = "UA-22200830-1"
 pluralizeListTitles     = false
 disableLanguages        = []
 
+hasCJKLanguage = true
+
 [markup.goldmark.renderer]
   unsafe                = true
 
