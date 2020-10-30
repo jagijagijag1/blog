@@ -24,6 +24,16 @@ categories:
 <!-- tocstop -->
 
 ---
+2020/10/30 追記ここから
+- 記事公開後コメントいただき，テーマをいじりたい場合はテーマ側をforkしてくる必要ないことが判明
+<blockquote class="twitter-tweet" data-partner="tweetdeck"><p lang="ja" dir="ltr">ʕ◔ϖ◔ʔ 👍<br>ちなみに ${hugo_project_dir}/layouts/partials/site-sidebar.html を用意すれば themes 以下のファイルを上書きできたりします。<a href="https://t.co/cLbI9jauJg">https://t.co/cLbI9jauJg</a></p>&mdash; peaceiris (@piris314) <a href="https://twitter.com/piris314/status/1320617884578533376?ref_src=twsrc%5Etfw">October 26, 2020</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+- 本記事でforkしたテーマを編集しているところは，Hugoプロジェクト側の適切なパスに同内容のファイルを置けばOK
+
+2020/10/30 追記ここまで
+
+---
 閉鎖してしまうQrunchで書いた記事をGitHub Pagesに移行したのと，選んだHugoテーマを少し拡張したので，そのときにやったことを書き留め．
 - このブログのHugoソースは→[GitHub - jagijagijag1/blog at source](https://github.com/jagijagijag1/blog/tree/source)
 - このブログ用に拡張したテーマは→[GitHub - jagijagijag1/hugo-future-imperfect-slim at add-pixela-social](https://github.com/jagijagijag1/hugo-future-imperfect-slim/tree/add-pixela-social)
