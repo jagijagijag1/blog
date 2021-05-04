@@ -1,0 +1,226 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><title>Micronaut on AWS Lambdaを試す - jagijagijag1 notes</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo 0.75.1"><meta itemprop=name content="Micronaut on AWS Lambdaを試す"><meta itemprop=description content="GraalVMのネイティブイメージをAWS Lambdaで動かしてみたかったので，Micronautを触ってみたログとつまづきメモ． 目次 環境 準"><meta itemprop=datePublished content="2021-05-04T19:53:56+09:00"><meta itemprop=dateModified content="2021-05-04T19:53:56+09:00"><meta itemprop=wordCount content="2418"><meta itemprop=keywords content="AWS,serverless,Java,Lambda,Micronaut,"><meta property="og:title" content="Micronaut on AWS Lambdaを試す"><meta property="og:description" content="GraalVMのネイティブイメージをAWS Lambdaで動かしてみたかったので，Micronautを触ってみたログとつまづきメモ． 目次 環境 準"><meta property="og:type" content="article"><meta property="og:url" content="https://jagijagijag1.github.io/blog/posts/2021_05_04/"><meta property="article:published_time" content="2021-05-04T19:53:56+09:00"><meta property="article:modified_time" content="2021-05-04T19:53:56+09:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="Micronaut on AWS Lambdaを試す"><meta name=twitter:description content="GraalVMのネイティブイメージをAWS Lambdaで動かしてみたかったので，Micronautを触ってみたログとつまづきメモ． 目次 環境 準"><meta name=twitter:site content="@jagijagijag1"><link rel=stylesheet href=//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/styles/hybrid.min.css><link rel=stylesheet href=/blog/css/bundle.min.c88daf8304a2b3db8d35fd49937812c9c8813008ae49e5cbe28190db1081b863.css integrity="sha256-yI2vgwSis9uNNf1Jk3gSyciBMAiuSeXL4oGQ2xCBuGM="><link rel=stylesheet href=/blog/css/add-on.css><link href=https://unpkg.com/applause-button/dist/applause-button.css rel=stylesheet type=text/css><script src=https://unpkg.com/applause-button/dist/applause-button.js></script><meta name=google-site-verification content="vaSgNHX9ucxZv0PzPwYiiKG-Sz_XDKjNOj1YTnzWwk0"></head><body><header id=site-header><nav id=site-nav><h1 class=nav-title><a href=/blog/ class=nav>Micronaut on AWS Lambdaを試す</a></h1><menu id=site-nav-menu class="flyout-menu menu"><a href=/blog/ class="nav link"><i class="fa fa-home"></i>Home</a>
+<a href=/blog/posts/ class="nav link"><i class="far fa-newspaper"></i>Articles</a>
+<a href=/blog/categories/ class="nav link"><i class="fas fa-sitemap"></i>Categories</a>
+<a href=/blog/tags/ class="nav link"><i class="fas fa-tags"></i>Tags</a>
+<a href=https://jagijagijag1.github.io/tiny-notes/ class="nav link"><i class="fas fa-sticky-note"></i>Tiny Notes</a>
+<a href=#share-menu class="nav link share-toggle"><i class="fas fa-share-alt">&nbsp;</i>Share</a>
+<a href=#search-input class="nav link search-toggle"><i class="fas fa-search">&nbsp;</i>Search</a></menu>
+<a href=#search-input class="nav search-toggle"><i class="fas fa-search fa-2x">&nbsp;</i></a>
+<a href=#share-menu class="nav share-toggle"><i class="fas fa-share-alt fa-2x">&nbsp;</i></a>
+<a href=#site-nav class="nav nav-toggle"><i class="fas fa-bars fa-2x"></i></a></nav><menu id=search class=menu><input id=search-input class="search-input menu"></input><div id=search-results class="search-results menu"></div></menu><menu id=share-menu class="flyout-menu menu"><h1>Share Post</h1><a href="//twitter.com/share?text=Micronaut%20on%20AWS%20Lambda%e3%82%92%e8%a9%a6%e3%81%99&url=https%3a%2f%2fjagijagijag1.github.io%2fblog%2fposts%2f2021_05_04%2f" target=_blank rel=noopener class="nav share-btn twitter"><p>Twitter</p></a></menu></header><div id=wrapper><section id=site-intro><a href=/blog/><img src=https://jagijagijag1.github.io/blog/images/icon.png class=circle width=100 alt="my icon"></a><header><h1>jagijagijag1 tech note</h1></header><main></main><footer><ul class=socnet-icons><li><a href=//github.com/jagijagijag1 target=_blank rel=noopener title=GitHub class="fab fa-github"></a></li><li><a href=//twitter.com/jagijagijag1 target=_blank rel=noopener title=Twitter class="fab fa-twitter"></a></li><li><a href=//pixe.la/@jagijagijag1 target=_blank rel=noopener title=Pixela class="fas fa-th"></a></li></ul></footer></section><main id=site-main><article class=post><header><div class=title><h2><a href=/blog/posts/2021_05_04/>Micronaut on AWS Lambdaを試す</a></h2></div><div class=meta><time datetime="2021-05-04 19:53:56 +0900 +0900">May 4, 2021</time><p>jagijagijag1</p></div></header><div id=socnet-share><div><applause-button color=firebrick url=https://jagijagijag1.github.io/blog/posts/2021_05_04/ multiclap=true style="width: 55px; height: 55px; margin-right: 15px;"></div><a href="//twitter.com/share?text=Micronaut%20on%20AWS%20Lambda%e3%82%92%e8%a9%a6%e3%81%99&url=https%3a%2f%2fjagijagijag1.github.io%2fblog%2fposts%2f2021_05_04%2f" target=_blank rel=noopener class="nav share-btn twitter"><p>Twitter</p></a></div><div class=content><p>GraalVMのネイティブイメージをAWS Lambdaで動かしてみたかったので，Micronautを触ってみたログとつまづきメモ．</p><h4 id=目次>目次</h4><ul><li><a href=#%E7%92%B0%E5%A2%83>環境</a></li><li><a href=#%E6%BA%96%E5%82%99>準備</a><ul><li><a href=#micronaut-cli%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB>Micronaut CLIインストール</a></li><li><a href=#sam-cli%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB>SAM CLIインストール</a></li></ul></li><li><a href=#aws%E6%8F%90%E4%BE%9Bjava%E3%83%A9%E3%83%B3%E3%82%BF%E3%82%A4%E3%83%A0%E3%82%92%E7%94%A8%E3%81%84%E3%82%8Blambda%E9%96%A2%E6%95%B0>AWS提供Javaランタイムを用いるLambda関数</a><ul><li><a href=#%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E4%BD%9C%E6%88%90>プロジェクト作成</a></li><li><a href=#%E3%83%AD%E3%83%BC%E3%82%AB%E3%83%AB%E5%AE%9F%E8%A1%8C%E3%81%A7%E3%83%86%E3%82%B9%E3%83%88>ローカル実行でテスト</a></li><li><a href=#%E3%83%87%E3%83%97%E3%83%AD%E3%82%A4%E3%81%97%E3%81%A6%E3%83%86%E3%82%B9%E3%83%88>デプロイしてテスト</a></li></ul></li><li><a href=#%E3%83%8D%E3%82%A4%E3%83%86%E3%82%A3%E3%83%96%E3%82%B3%E3%83%B3%E3%83%91%E3%82%A4%E3%83%AB%E3%82%AB%E3%82%B9%E3%82%BF%E3%83%A0%E3%83%A9%E3%83%B3%E3%82%BF%E3%82%A4%E3%83%A0%E3%82%92%E7%94%A8%E3%81%84%E3%82%8Blambda%E9%96%A2%E6%95%B0>ネイティブコンパイル&カスタムランタイムを用いるLambda関数</a><ul><li><a href=#%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E4%BD%9C%E6%88%90-1>プロジェクト作成</a></li><li><a href=#%E3%83%AD%E3%83%BC%E3%82%AB%E3%83%AB%E5%AE%9F%E8%A1%8C%E3%81%A7%E3%83%86%E3%82%B9%E3%83%88-1>ローカル実行でテスト</a></li><li><a href=#%E3%83%87%E3%83%97%E3%83%AD%E3%82%A4%E3%81%97%E3%81%A6%E3%83%86%E3%82%B9%E3%83%88-1>デプロイしてテスト</a></li></ul></li></ul><h2 id=環境>環境</h2><ul><li>OS: macOS Big Sur 11.3</li><li>Java: openjdk version &ldquo;15.0.2&rdquo; 2021-01-19</li><li>Homebrew 3.1.5</li><li>aws-cli/2.2.1</li><li>Docker 20.10.5</li></ul><h2 id=準備>準備</h2><h3 id=micronaut-cliインストール>Micronaut CLIインストール</h3><ul><li>Homebrewでインストール</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ brew install --cask micronaut-projects/tap/micronaut
+</code></pre></div><ul><li>続いて<code>mn --version</code>コマンドを実行しようとすると，<code>"mn"は，開発元を検証できないため開けません．</code>というメッセージが出る</li><li>実行許可するため，<code>システム環境設定</code>→<code>セキュリティとプライバシー</code>内の<code>一般</code>を開き，ウインドウ下部の「このまま許可」を選ぶ</li><li>再度<code>mn --version</code>コマンドを実行すると，先程と異なり<code>"mn"は，開発元を検証できません．開いてもよろしいですか?</code>というメッセージがでるので，「開く」を選ぶ</li><li>するとバージョン情報が出力される</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ mn --version
+Micronaut Version: 2.5.0
+</code></pre></div><h3 id=sam-cliインストール>SAM CLIインストール</h3><ul><li>Lambda関数のローカルテストとデプロイに利用</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ brew tap aws/tap
+$ brew install aws-sam-cli
+$ sam --version
+SAM CLI, version 1.23.0
+</code></pre></div><h2 id=aws提供javaランタイムを用いるlambda関数>AWS提供Javaランタイムを用いるLambda関数</h2><h3 id=プロジェクト作成>プロジェクト作成</h3><ul><li>適当な場所で下記コマンドを実行し，雛形生成</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ mn create-function-app example.micronaut.complete --lang kotlin --features aws-lambda
+</code></pre></div><ul><li>以下，生成された<code>complete</code>ディレクトリで作業</li><li>(FATな)JARを生成<ul><li>成功すると<code>complete/build/libs/complete-0.1-all.jar</code>が出力される</li></ul></li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ ./gradlew shadowJar
+</code></pre></div><h3 id=ローカル実行でテスト>ローカル実行でテスト</h3><ul><li>sam templateを作成</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yml:template.yml data-lang=yml:template.yml><span style=color:#f92672>AWSTemplateFormatVersion</span>: <span style=color:#e6db74>&#34;2010-09-09&#34;</span>
+<span style=color:#f92672>Transform</span>: <span style=color:#e6db74>&#34;AWS::Serverless-2016-10-31&#34;</span>
+<span style=color:#f92672>Description</span>: <span style=color:#ae81ff>Micronaut Lambda function.</span>
+<span style=color:#f92672>Resources</span>:
+  <span style=color:#f92672>function</span>:
+    <span style=color:#f92672>Type</span>: <span style=color:#ae81ff>AWS::Serverless::Function</span>
+    <span style=color:#f92672>Properties</span>:
+      <span style=color:#f92672>CodeUri</span>: <span style=color:#ae81ff>build/libs/complete-0.1-all.jar</span>
+      <span style=color:#f92672>Handler</span>: <span style=color:#ae81ff>example.micronaut.BookRequestHandler</span>
+      <span style=color:#f92672>Runtime</span>: <span style=color:#ae81ff>java11</span>
+      <span style=color:#f92672>Description</span>: <span style=color:#ae81ff>Micronaut function</span>
+      <span style=color:#f92672>MemorySize</span>: <span style=color:#ae81ff>512</span>
+      <span style=color:#f92672>Timeout</span>: <span style=color:#ae81ff>15</span>
+      <span style=color:#75715e># Function&#39;s execution role</span>
+      <span style=color:#f92672>Policies</span>:
+        - <span style=color:#ae81ff>AWSLambdaBasicExecutionRole</span>
+        - <span style=color:#ae81ff>AWSLambda_ReadOnlyAccess</span>
+        - <span style=color:#ae81ff>AWSXrayWriteOnlyAccess</span>
+        - <span style=color:#ae81ff>AWSLambdaVPCAccessExecutionRole</span>
+      <span style=color:#f92672>Tracing</span>: <span style=color:#ae81ff>Active</span>
+</code></pre></div><ul><li>テスト用データを作成</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json:testevent.json data-lang=json:testevent.json>{
+  <span style=color:#f92672>&#34;name&#34;</span>: <span style=color:#e6db74>&#34;Building Microservices&#34;</span>
+}
+</code></pre></div><ul><li>上記テンプレートとデータを用い，Lambda関数をローカル実行<ul><li>要Docker</li><li>最後の部分のレスポンスが想定どおりであることを確認</li></ul></li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ saml local invoke -e testevent.json
+Invoking example.micronaut.BookRequestHandler <span style=color:#f92672>(</span>java11<span style=color:#f92672>)</span>
+Decompressing /Users/ryo/work/java/java-sandbox/mn-lambda/complete/build/libs/complete-0.1-all.jar
+Skip pulling image and use local one: amazon/aws-sam-cli-emulation-image-java11:rapid-1.23.0.
+
+Mounting /private/var/folders/_7/m8bf5d2n6cj5xg9ptdvsry5m0000gn/T/tmpwr1pmk59 as /var/task:ro,delegated inside runtime container
+START RequestId: 4e0de115-ae68-4e8d-bdc4-58e7805eb69a Version: $LATEST
+04:44:33.933 <span style=color:#f92672>[</span>main<span style=color:#f92672>]</span> INFO  i.m.context.env.DefaultEnvironment - Established active environments: <span style=color:#f92672>[</span>ec2, cloud, <span style=color:#66d9ef>function</span>, lambda<span style=color:#f92672>]</span>
+END RequestId: 4e0de115-ae68-4e8d-bdc4-58e7805eb69a
+REPORT RequestId: 4e0de115-ae68-4e8d-bdc4-58e7805eb69a  Init Duration: 0.64 ms  Duration: 5730.52 ms    Billed Duration: <span style=color:#ae81ff>5800</span> ms        Memory Size: <span style=color:#ae81ff>512</span> MB  Max Memory Used: <span style=color:#ae81ff>512</span> MB
+<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;Building Microservices&#34;</span>,<span style=color:#e6db74>&#34;isbn&#34;</span>:<span style=color:#e6db74>&#34;b3b2e286-811e-437e-b85d-04f7e564384a&#34;</span><span style=color:#f92672>}</span>
+</code></pre></div><h3 id=デプロイしてテスト>デプロイしてテスト</h3><ul><li><code>sam deploy</code>する (事前にjarアップロード用のS3バケットを用意)</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ sam deploy --stack-name mn-lambda-test --capabilities CAPABILITY_IAM --s3-bucket &lt;your-bucket-name&gt;
+</code></pre></div><ul><li>デプロイ成功したら，AWS CLIから実行してみる<ul><li>AWS CLI 2からパラメタをbase64として受け付ける様になっているので，そのまま文字列を渡したい場合は<code>--cli-binary-format raw-in-base64-out</code>オプションが必要<ul><li>ref: <a href=https://qiita.com/marqs/items/793b72bbd9557441fbf4>AWS CLI v2にしたらlambda invokeがコケる - Qiita</a></li></ul></li></ul></li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ aws lambda invoke --function-name &lt;your-function-name&gt; --payload <span style=color:#e6db74>&#39;{&#34;name&#34;: &#34;Building Microservices&#34;}&#39;</span> response.json --cli-binary-format raw-in-base64-out
+</code></pre></div><ul><li>実行が成功すると，<code>response.json</code>ファイルが出力される</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json:response.json data-lang=json:response.json>{<span style=color:#f92672>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;Building Microservices&#34;</span>,<span style=color:#f92672>&#34;isbn&#34;</span>:<span style=color:#e6db74>&#34;dfc835cc-8be7-4f78-86db-39a80ab40151&#34;</span>}
+</code></pre></div><ul><li>AWSマネジメントコンソールなどからトレースを確認可能<ul><li>今回の場合，コールドスタートの初回起動に約3秒かかった</li></ul></li></ul><p><img src=/blog/posts/2021_05_04/f83084f6.png alt=f83084f6.png></p><h2 id=ネイティブコンパイルカスタムランタイムを用いるlambda関数>ネイティブコンパイル&カスタムランタイムを用いるLambda関数</h2><ul><li>今度はGraalVMのネイティブコンパイル版をLambdaで動かしてみる</li></ul><h3 id=プロジェクト作成-1>プロジェクト作成</h3><ul><li>適当なディレクトリで，graalvm機能対応の雛形を生成</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ mn create-function-app example.micronaut.complete --lang kotlin --features<span style=color:#f92672>=</span>aws-lambda-custom-runtime,graalvm
+</code></pre></div><ul><li>以下，生成された<code>complete</code>ディレクトリで作業</li><li>下記コマンドでネイティブコンパイルしたイメージを生成<ul><li>要Docker</li><li>成功すると<code>build/libs/complete-0.1-lambda.zip</code>が出力される</li></ul></li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ ./gradlew buildNativeLambda -Pmicronaut.runtime<span style=color:#f92672>=</span>lambda
+</code></pre></div><ul><li>初回実行時，Task <code>:dockerBuildNative</code>で失敗<ul><li>エラーメッセージは以下<blockquote><p>Execution failed for task &lsquo;:dockerBuildNative&rsquo;.
+Could not build image: The command &lsquo;/bin/sh -c native-image -H:Class=example.micronaut.BookLambdaRuntime -H:Name=application &ndash;no-fallback -cp /home/app/libs/*.jar:/home/app/resources:/home/app/application.jar&rsquo; returned a non-zero code: 137</p></blockquote></li><li>下記によると，メモリ不足による<code>OutOfMemory</code>っぽい<ul><li><a href=https://github.com/quarkusio/quarkus/issues/1140>Improve native image build error message · Issue #1140 · quarkusio/quarkus · GitHub</a></li></ul></li><li>Docker Desktopを利用しているので，<code>Preferences</code>-<code>Resources</code>でメモリ割り当てを増やして解決</li><li>メモリ8GBのマシンだとコンパイルに10分強かかった…</li></ul></li></ul><h3 id=ローカル実行でテスト-1>ローカル実行でテスト</h3><ul><li>sam templateを作成</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yml:template.yml data-lang=yml:template.yml><span style=color:#f92672>AWSTemplateFormatVersion</span>: <span style=color:#e6db74>&#34;2010-09-09&#34;</span>
+<span style=color:#f92672>Transform</span>: <span style=color:#e6db74>&#34;AWS::Serverless-2016-10-31&#34;</span>
+<span style=color:#f92672>Description</span>: <span style=color:#ae81ff>Micronaut Lambda function with GraalVM native image.</span>
+<span style=color:#f92672>Resources</span>:
+  <span style=color:#f92672>function</span>:
+    <span style=color:#f92672>Type</span>: <span style=color:#ae81ff>AWS::Serverless::Function</span>
+    <span style=color:#f92672>Properties</span>:
+      <span style=color:#f92672>CodeUri</span>: <span style=color:#ae81ff>build/libs/complete-0.1-lambda.zip</span>
+      <span style=color:#f92672>Handler</span>: <span style=color:#ae81ff>note.used</span>
+      <span style=color:#f92672>Runtime</span>: <span style=color:#ae81ff>provided</span>
+      <span style=color:#f92672>Description</span>: <span style=color:#ae81ff>Micronaut native image function</span>
+      <span style=color:#f92672>MemorySize</span>: <span style=color:#ae81ff>512</span>
+      <span style=color:#f92672>Timeout</span>: <span style=color:#ae81ff>15</span>
+      <span style=color:#75715e># Function&#39;s execution role</span>
+      <span style=color:#f92672>Policies</span>:
+        - <span style=color:#ae81ff>AWSLambdaBasicExecutionRole</span>
+        - <span style=color:#ae81ff>AWSLambda_ReadOnlyAccess</span>
+        - <span style=color:#ae81ff>AWSXrayWriteOnlyAccess</span>
+        - <span style=color:#ae81ff>AWSLambdaVPCAccessExecutionRole</span>
+      <span style=color:#f92672>Tracing</span>: <span style=color:#ae81ff>Active</span>
+</code></pre></div><ul><li>テスト用データを作成<ul><li>雛形のカスタムランタイムがAPI Gatewayからのリクエストを受ける用に作られているため，API Gatewayリクエスト形式のJSONを準備</li><li>Lambdaのテストで提供されている<code>apigateway-aws-proxy</code>テンプレートの<code>"body"</code>要素に書籍名をセット</li></ul></li></ul><details><summary>テスト用データが長いので折りたたみ(詳細はここを開いてください)</summary><div><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json:testevent.json data-lang=json:testevent.json>{
+  <span style=color:#f92672>&#34;body&#34;</span>: <span style=color:#e6db74>&#34;{\&#34;name\&#34;: \&#34;Building Microservices\&#34;}&#34;</span>,
+  <span style=color:#f92672>&#34;resource&#34;</span>: <span style=color:#e6db74>&#34;/{proxy+}&#34;</span>,
+  <span style=color:#f92672>&#34;path&#34;</span>: <span style=color:#e6db74>&#34;/path/to/resource&#34;</span>,
+  <span style=color:#f92672>&#34;httpMethod&#34;</span>: <span style=color:#e6db74>&#34;POST&#34;</span>,
+  <span style=color:#f92672>&#34;isBase64Encoded&#34;</span>: <span style=color:#66d9ef>true</span>,
+  <span style=color:#f92672>&#34;queryStringParameters&#34;</span>: {
+    <span style=color:#f92672>&#34;foo&#34;</span>: <span style=color:#e6db74>&#34;bar&#34;</span>
+  },
+  <span style=color:#f92672>&#34;multiValueQueryStringParameters&#34;</span>: {
+    <span style=color:#f92672>&#34;foo&#34;</span>: [
+      <span style=color:#e6db74>&#34;bar&#34;</span>
+    ]
+  },
+  <span style=color:#f92672>&#34;pathParameters&#34;</span>: {
+    <span style=color:#f92672>&#34;proxy&#34;</span>: <span style=color:#e6db74>&#34;/path/to/resource&#34;</span>
+  },
+  <span style=color:#f92672>&#34;stageVariables&#34;</span>: {
+    <span style=color:#f92672>&#34;baz&#34;</span>: <span style=color:#e6db74>&#34;qux&#34;</span>
+  },
+  <span style=color:#f92672>&#34;headers&#34;</span>: {
+    <span style=color:#f92672>&#34;Accept&#34;</span>: <span style=color:#e6db74>&#34;text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8&#34;</span>,
+    <span style=color:#f92672>&#34;Accept-Encoding&#34;</span>: <span style=color:#e6db74>&#34;gzip, deflate, sdch&#34;</span>,
+    <span style=color:#f92672>&#34;Accept-Language&#34;</span>: <span style=color:#e6db74>&#34;en-US,en;q=0.8&#34;</span>,
+    <span style=color:#f92672>&#34;Cache-Control&#34;</span>: <span style=color:#e6db74>&#34;max-age=0&#34;</span>,
+    <span style=color:#f92672>&#34;CloudFront-Forwarded-Proto&#34;</span>: <span style=color:#e6db74>&#34;https&#34;</span>,
+    <span style=color:#f92672>&#34;CloudFront-Is-Desktop-Viewer&#34;</span>: <span style=color:#e6db74>&#34;true&#34;</span>,
+    <span style=color:#f92672>&#34;CloudFront-Is-Mobile-Viewer&#34;</span>: <span style=color:#e6db74>&#34;false&#34;</span>,
+    <span style=color:#f92672>&#34;CloudFront-Is-SmartTV-Viewer&#34;</span>: <span style=color:#e6db74>&#34;false&#34;</span>,
+    <span style=color:#f92672>&#34;CloudFront-Is-Tablet-Viewer&#34;</span>: <span style=color:#e6db74>&#34;false&#34;</span>,
+    <span style=color:#f92672>&#34;CloudFront-Viewer-Country&#34;</span>: <span style=color:#e6db74>&#34;US&#34;</span>,
+    <span style=color:#f92672>&#34;Host&#34;</span>: <span style=color:#e6db74>&#34;1234567890.execute-api.ap-northeast-1.amazonaws.com&#34;</span>,
+    <span style=color:#f92672>&#34;Upgrade-Insecure-Requests&#34;</span>: <span style=color:#e6db74>&#34;1&#34;</span>,
+    <span style=color:#f92672>&#34;User-Agent&#34;</span>: <span style=color:#e6db74>&#34;Custom User Agent String&#34;</span>,
+    <span style=color:#f92672>&#34;Via&#34;</span>: <span style=color:#e6db74>&#34;1.1 08f323deadbeefa7af34d5feb414ce27.cloudfront.net (CloudFront)&#34;</span>,
+    <span style=color:#f92672>&#34;X-Amz-Cf-Id&#34;</span>: <span style=color:#e6db74>&#34;cDehVQoZnx43VYQb9j2-nvCh-9z396Uhbp027Y2JvkCPNLmGJHqlaA==&#34;</span>,
+    <span style=color:#f92672>&#34;X-Forwarded-For&#34;</span>: <span style=color:#e6db74>&#34;127.0.0.1, 127.0.0.2&#34;</span>,
+    <span style=color:#f92672>&#34;X-Forwarded-Port&#34;</span>: <span style=color:#e6db74>&#34;443&#34;</span>,
+    <span style=color:#f92672>&#34;X-Forwarded-Proto&#34;</span>: <span style=color:#e6db74>&#34;https&#34;</span>
+  },
+  <span style=color:#f92672>&#34;multiValueHeaders&#34;</span>: {
+    <span style=color:#f92672>&#34;Accept&#34;</span>: [
+      <span style=color:#e6db74>&#34;text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8&#34;</span>
+    ],
+    <span style=color:#f92672>&#34;Accept-Encoding&#34;</span>: [
+      <span style=color:#e6db74>&#34;gzip, deflate, sdch&#34;</span>
+    ],
+    <span style=color:#f92672>&#34;Accept-Language&#34;</span>: [
+      <span style=color:#e6db74>&#34;en-US,en;q=0.8&#34;</span>
+    ],
+    <span style=color:#f92672>&#34;Cache-Control&#34;</span>: [
+      <span style=color:#e6db74>&#34;max-age=0&#34;</span>
+    ],
+    <span style=color:#f92672>&#34;CloudFront-Forwarded-Proto&#34;</span>: [
+      <span style=color:#e6db74>&#34;https&#34;</span>
+    ],
+    <span style=color:#f92672>&#34;CloudFront-Is-Desktop-Viewer&#34;</span>: [
+      <span style=color:#e6db74>&#34;true&#34;</span>
+    ],
+    <span style=color:#f92672>&#34;CloudFront-Is-Mobile-Viewer&#34;</span>: [
+      <span style=color:#e6db74>&#34;false&#34;</span>
+    ],
+    <span style=color:#f92672>&#34;CloudFront-Is-SmartTV-Viewer&#34;</span>: [
+      <span style=color:#e6db74>&#34;false&#34;</span>
+    ],
+    <span style=color:#f92672>&#34;CloudFront-Is-Tablet-Viewer&#34;</span>: [
+      <span style=color:#e6db74>&#34;false&#34;</span>
+    ],
+    <span style=color:#f92672>&#34;CloudFront-Viewer-Country&#34;</span>: [
+      <span style=color:#e6db74>&#34;US&#34;</span>
+    ],
+    <span style=color:#f92672>&#34;Host&#34;</span>: [
+      <span style=color:#e6db74>&#34;0123456789.execute-api.ap-northeast-1.amazonaws.com&#34;</span>
+    ],
+    <span style=color:#f92672>&#34;Upgrade-Insecure-Requests&#34;</span>: [
+      <span style=color:#e6db74>&#34;1&#34;</span>
+    ],
+    <span style=color:#f92672>&#34;User-Agent&#34;</span>: [
+      <span style=color:#e6db74>&#34;Custom User Agent String&#34;</span>
+    ],
+    <span style=color:#f92672>&#34;Via&#34;</span>: [
+      <span style=color:#e6db74>&#34;1.1 08f323deadbeefa7af34d5feb414ce27.cloudfront.net (CloudFront)&#34;</span>
+    ],
+    <span style=color:#f92672>&#34;X-Amz-Cf-Id&#34;</span>: [
+      <span style=color:#e6db74>&#34;cDehVQoZnx43VYQb9j2-nvCh-9z396Uhbp027Y2JvkCPNLmGJHqlaA==&#34;</span>
+    ],
+    <span style=color:#f92672>&#34;X-Forwarded-For&#34;</span>: [
+      <span style=color:#e6db74>&#34;127.0.0.1, 127.0.0.2&#34;</span>
+    ],
+    <span style=color:#f92672>&#34;X-Forwarded-Port&#34;</span>: [
+      <span style=color:#e6db74>&#34;443&#34;</span>
+    ],
+    <span style=color:#f92672>&#34;X-Forwarded-Proto&#34;</span>: [
+      <span style=color:#e6db74>&#34;https&#34;</span>
+    ]
+  },
+  <span style=color:#f92672>&#34;requestContext&#34;</span>: {
+    <span style=color:#f92672>&#34;accountId&#34;</span>: <span style=color:#e6db74>&#34;123456789012&#34;</span>,
+    <span style=color:#f92672>&#34;resourceId&#34;</span>: <span style=color:#e6db74>&#34;123456&#34;</span>,
+    <span style=color:#f92672>&#34;stage&#34;</span>: <span style=color:#e6db74>&#34;prod&#34;</span>,
+    <span style=color:#f92672>&#34;requestId&#34;</span>: <span style=color:#e6db74>&#34;c6af9ac6-7b61-11e6-9a41-93e8deadbeef&#34;</span>,
+    <span style=color:#f92672>&#34;requestTime&#34;</span>: <span style=color:#e6db74>&#34;09/Apr/2015:12:34:56 +0000&#34;</span>,
+    <span style=color:#f92672>&#34;requestTimeEpoch&#34;</span>: <span style=color:#ae81ff>1428582896000</span>,
+    <span style=color:#f92672>&#34;identity&#34;</span>: {
+      <span style=color:#f92672>&#34;cognitoIdentityPoolId&#34;</span>: <span style=color:#66d9ef>null</span>,
+      <span style=color:#f92672>&#34;accountId&#34;</span>: <span style=color:#66d9ef>null</span>,
+      <span style=color:#f92672>&#34;cognitoIdentityId&#34;</span>: <span style=color:#66d9ef>null</span>,
+      <span style=color:#f92672>&#34;caller&#34;</span>: <span style=color:#66d9ef>null</span>,
+      <span style=color:#f92672>&#34;accessKey&#34;</span>: <span style=color:#66d9ef>null</span>,
+      <span style=color:#f92672>&#34;sourceIp&#34;</span>: <span style=color:#e6db74>&#34;127.0.0.1&#34;</span>,
+      <span style=color:#f92672>&#34;cognitoAuthenticationType&#34;</span>: <span style=color:#66d9ef>null</span>,
+      <span style=color:#f92672>&#34;cognitoAuthenticationProvider&#34;</span>: <span style=color:#66d9ef>null</span>,
+      <span style=color:#f92672>&#34;userArn&#34;</span>: <span style=color:#66d9ef>null</span>,
+      <span style=color:#f92672>&#34;userAgent&#34;</span>: <span style=color:#e6db74>&#34;Custom User Agent String&#34;</span>,
+      <span style=color:#f92672>&#34;user&#34;</span>: <span style=color:#66d9ef>null</span>
+    },
+    <span style=color:#f92672>&#34;path&#34;</span>: <span style=color:#e6db74>&#34;/prod/path/to/resource&#34;</span>,
+    <span style=color:#f92672>&#34;resourcePath&#34;</span>: <span style=color:#e6db74>&#34;/{proxy+}&#34;</span>,
+    <span style=color:#f92672>&#34;httpMethod&#34;</span>: <span style=color:#e6db74>&#34;POST&#34;</span>,
+    <span style=color:#f92672>&#34;apiId&#34;</span>: <span style=color:#e6db74>&#34;1234567890&#34;</span>,
+    <span style=color:#f92672>&#34;protocol&#34;</span>: <span style=color:#e6db74>&#34;HTTP/1.1&#34;</span>
+  }
+}
+</code></pre></div></div></details><ul><li>上記テンプレートとデータを用い，Lambda関数をローカル実行<ul><li>要Docker</li><li>最後の部分のレスポンスが想定どおりであることを確認</li></ul></li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ saml local invoke -e testevent.json
+Invoking note.used <span style=color:#f92672>(</span>provided<span style=color:#f92672>)</span>
+Decompressing /Users/ryo/work/java/java-sandbox/mn-lambda-graalvm/complete/build/libs/complete-0.1-lambda.zip
+Skip pulling image and use local one: amazon/aws-sam-cli-emulation-image-provided:rapid-1.23.0.
+
+Mounting /private/var/folders/_7/m8bf5d2n6cj5xg9ptdvsry5m0000gn/T/tmpz4qxuo5t as /var/task:ro,delegated inside runtime container
+START RequestId: 9724d856-a797-485f-b665-2c6e40f918d9 Version: $LATEST
+05:23:48.981 <span style=color:#f92672>[</span>main<span style=color:#f92672>]</span> INFO  i.m.context.env.DefaultEnvironment - Established active environments: <span style=color:#f92672>[</span>ec2, cloud, <span style=color:#66d9ef>function</span>, lambda<span style=color:#f92672>]</span>
+END RequestId: 9724d856-a797-485f-b665-2c6e40f918d9
+REPORT RequestId: 9724d856-a797-485f-b665-2c6e40f918d9  Init Duration: 0.23 ms  Duration: 455.86 ms     Billed Duration: <span style=color:#ae81ff>500</span> ms Memory Size: <span style=color:#ae81ff>512</span> MB     Max Memory Used: <span style=color:#ae81ff>512</span> MB
+<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;statusCode&#34;</span>:200,<span style=color:#e6db74>&#34;headers&#34;</span>:<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;Content-Type&#34;</span>:<span style=color:#e6db74>&#34;application/json&#34;</span><span style=color:#f92672>}</span>,<span style=color:#e6db74>&#34;body&#34;</span>:<span style=color:#e6db74>&#34;{\&#34;name\&#34;:\&#34;Building Microservices\&#34;,\&#34;isbn\&#34;:\&#34;0915193e-21b1-4f7e-bf0b-a76b0cff22b7\&#34;}&#34;</span><span style=color:#f92672>}</span>
+</code></pre></div><h3 id=デプロイしてテスト-1>デプロイしてテスト</h3><ul><li><code>sam deploy</code>する (事前にjarアップロード用のS3バケットを用意)</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ sam deploy --stack-name mn-lambda-graalvm-test --capabilities CAPABILITY_IAM --s3-bucket &lt;your-bucket-name&gt;
+</code></pre></div><ul><li>デプロイ成功したら，AWS CLIから実行してみる</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ aws lambda invoke --function-name &lt;your-function-name&gt; --payload <span style=color:#e6db74>&#34;</span><span style=color:#66d9ef>$(</span>cat testevent.json<span style=color:#66d9ef>)</span><span style=color:#e6db74>&#34;</span> response.json --cli-binary-format raw-in-base64-out
+</code></pre></div><ul><li>実行が成功すると，<code>response.json</code>ファイルが出力される</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json:response.json data-lang=json:response.json>{<span style=color:#f92672>&#34;statusCode&#34;</span>:<span style=color:#ae81ff>200</span>,<span style=color:#f92672>&#34;headers&#34;</span>:{<span style=color:#f92672>&#34;Content-Type&#34;</span>:<span style=color:#e6db74>&#34;application/json&#34;</span>},<span style=color:#f92672>&#34;body&#34;</span>:<span style=color:#e6db74>&#34;{\&#34;name\&#34;:\&#34;Building Microservices\&#34;,\&#34;isbn\&#34;:\&#34;55e9a092-3b03-4957-9459-96b8aef17962\&#34;}&#34;</span>}
+</code></pre></div><ul><li>AWSマネジメントコンソールなどからトレースを確認可能<ul><li>ネイティブイメージにより，コールドスタートの初回起動が約0.5秒に短縮された</li></ul></li></ul><p><img src=/blog/posts/2021_05_04/1909ed61.png alt=1909d61.png></p></div><footer><div class=stats><ul class=categories><li><a class=article-terms-link href=/blog/categories/dev-note/>dev-note</a></li></ul><ul class=tags><li><a class=article-terms-link href=/blog/tags/aws/>AWS</a></li><li><a class=article-terms-link href=/blog/tags/serverless/>serverless</a></li><li><a class=article-terms-link href=/blog/tags/java/>Java</a></li><li><a class=article-terms-link href=/blog/tags/lambda/>Lambda</a></li><li><a class=article-terms-link href=/blog/tags/micronaut/>Micronaut</a></li></ul></div></footer></article><article class=post><div><h2 id=say-something>Say Something</h2><form id=comment-form class=new-comment method=post><h3 class="reply-notice hidden"><span class=reply-name></span></h3><input type=hidden name=options[entryId] value=e3f767a99cc636db7c02e6a3ab9933bd>
+<input type=hidden name=fields[replyThread]>
+<input type=hidden name=fields[replyID]>
+<input type=hidden name=fields[replyName]>
+<input required name=fields[name] type=text placeholder="Your Name">
+<input name=fields[website] type=text placeholder="Your Website">
+<input required name=fields[email] type=email placeholder="Your Email">
+<textarea required name=fields[body] placeholder="Your Message" rows=10></textarea><div class=submit-notice><strong class="submit-notice-text submit-success hidden">Thanks for your comment! It will be shown on the site once it has been approved.</strong>
+<strong class="submit-notice-text submit-failed hidden">Sorry, there was an error with your submission. Please make sure all required fields have been completed and try again.</strong></div><input type=submit value=Submit class=button>
+<input type=submit value=Submitted class="hidden button" disabled>
+<input type=reset value=Reset class=button></form></div><div><h2>Comments</h2></div></article><div class=pagination><a href=/blog/posts/2021_04_18/-indexx/ class="button right"><span>AWS botocore `CreateNetworkAclEntry`の例の誤り</span></a></div></main><section id=site-sidebar><section id=recent-posts><header><h1>Recent Posts</h1></header><article class=mini-post><header><h2><a href=/blog/posts/2021_05_04/>Micronaut on AWS Lambdaを試す</a></h2><time class=published datetime="2021-05-04 19:53:56 +0900 +0900">May 4, 2021</time></header></article><article class=mini-post><header><h2><a href=/blog/posts/2021_04_18/-indexx/>AWS botocore `CreateNetworkAclEntry`の例の誤り</a></h2><time class=published datetime="2021-04-18 22:27:02 +0900 +0900">April 18, 2021</time></header></article><article class=mini-post><header><h2><a href=/blog/posts/2020_10_25/>Qrunch記事のHugo on GitHub Pages移行とHugoテーマ拡張</a></h2><time class=published datetime="2020-10-25 22:28:40 +0900 +0900">October 25, 2020</time></header></article><footer><a href=/blog/posts/ class=button>See More</a></footer></section><section id=categories><header><h1><a href=/blog/categories>Categories</a></h1></header><ul><li><a href=/blog/categories/dev-note/>dev-note<span class=count>12</span></a><li><a href=/blog/categories/trouble-note/>trouble-note<span class=count>3</span></a><li><a href=/blog/categories/tech-note/>tech-note<span class=count>1</span></a></li></ul></section><section id=pixela_access_counter><header><h1>Blog PVs</h1></header><div id=svg-load-area style="border:1px solid rgba(161,161,161,.3)"></div><div style=text-align:right>Powered by <a href=https://pixe.la/ target=_blank>Pixela</a></div></section><script src=https://unpkg.com/tippy.js@3/dist/tippy.all.min.js></script><script>document.addEventListener('DOMContentLoaded',function(){$('#svg-load-area').load('https:\/\/pixe.la\/v1\/users\/jagijagijag1\/graphs\/qrunch-pv?mode=short',function(){tippy('.each-day',{arrow:true});});});</script></section><footer id=site-footer><ul class=socnet-icons><li><a href=//github.com/jagijagijag1 target=_blank rel=noopener title=GitHub class="fab fa-github"></a></li><li><a href=//twitter.com/jagijagijag1 target=_blank rel=noopener title=Twitter class="fab fa-twitter"></a></li><li><a href=//pixe.la/@jagijagijag1 target=_blank rel=noopener title=Pixela class="fas fa-th"></a></li></ul><p class=copyright>© 2021 jagijagijag1 notes<br>Theme: <a href=https://github.com/pacollins/hugo-future-imperfect-slim target=_blank rel=noopener>Hugo Future Imperfect Slim</a><br>A <a href=https://html5up.net/future-imperfect target=_blank rel=noopener>HTML5 UP port</a> | Powered by <a href=https://gohugo.io/ title=0.75.1 target=_blank rel=noopener>Hugo</a></p></footer><a id=back-to-top href=# class="fas fa-arrow-up fa-2x"></a><script src=/blog/js/highlight.js></script><script>hljs.initHighlightingOnLoad();</script><script src=/blog/js/bundle.min.5955090a3253deadcd66071270aa2274dabe15ffc97094cec252d87b6f3f00bf.js integrity="sha256-WVUJCjJT3q3NZgcScKoidNq+Ff/JcJTOwlLYe28/AL8="></script><script src=/blog/js/add-on.js></script><script type=application/javascript>var doNotTrack=false;if(!doNotTrack){window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;ga('create','UA-22200830-1','auto');ga('send','pageview');}</script><script async src=https://www.google-analytics.com/analytics.js></script></div></body></html>
