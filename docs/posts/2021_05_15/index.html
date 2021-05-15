@@ -1,0 +1,143 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><title>Quarkus on AWS Lambdaを試す - jagijagijag1 notes</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=generator content="Hugo 0.75.1"><meta itemprop=name content="Quarkus on AWS Lambdaを試す"><meta itemprop=description content="環境 OS: macOS Big Sur 11.3 Java: openjdk version &ldquo;15.0.2&rdquo; 2021-01-19 aws-cli/2.2.1 Docker 20.10.5 Apache Maven 3.8.1 AWS提供Javaランタイムを用いるLambda関数 プロジェクト作成 適当な場所で下記コマンドを実行し，雛"><meta itemprop=datePublished content="2021-05-15T20:53:05+09:00"><meta itemprop=dateModified content="2021-05-15T20:53:05+09:00"><meta itemprop=wordCount content="1839"><meta itemprop=keywords content="AWS,serverless,Java,Lambda,Quarkus,"><meta property="og:title" content="Quarkus on AWS Lambdaを試す"><meta property="og:description" content="環境 OS: macOS Big Sur 11.3 Java: openjdk version &ldquo;15.0.2&rdquo; 2021-01-19 aws-cli/2.2.1 Docker 20.10.5 Apache Maven 3.8.1 AWS提供Javaランタイムを用いるLambda関数 プロジェクト作成 適当な場所で下記コマンドを実行し，雛"><meta property="og:type" content="article"><meta property="og:url" content="https://jagijagijag1.github.io/blog/posts/2021_05_15/"><meta property="article:published_time" content="2021-05-15T20:53:05+09:00"><meta property="article:modified_time" content="2021-05-15T20:53:05+09:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="Quarkus on AWS Lambdaを試す"><meta name=twitter:description content="環境 OS: macOS Big Sur 11.3 Java: openjdk version &ldquo;15.0.2&rdquo; 2021-01-19 aws-cli/2.2.1 Docker 20.10.5 Apache Maven 3.8.1 AWS提供Javaランタイムを用いるLambda関数 プロジェクト作成 適当な場所で下記コマンドを実行し，雛"><meta name=twitter:site content="@jagijagijag1"><link rel=stylesheet href=//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/styles/hybrid.min.css><link rel=stylesheet href=/blog/css/bundle.min.c88daf8304a2b3db8d35fd49937812c9c8813008ae49e5cbe28190db1081b863.css integrity="sha256-yI2vgwSis9uNNf1Jk3gSyciBMAiuSeXL4oGQ2xCBuGM="><link rel=stylesheet href=/blog/css/add-on.css><link href=https://unpkg.com/applause-button/dist/applause-button.css rel=stylesheet type=text/css><script src=https://unpkg.com/applause-button/dist/applause-button.js></script><meta name=google-site-verification content="vaSgNHX9ucxZv0PzPwYiiKG-Sz_XDKjNOj1YTnzWwk0"></head><body><header id=site-header><nav id=site-nav><h1 class=nav-title><a href=/blog/ class=nav>Quarkus on AWS Lambdaを試す</a></h1><menu id=site-nav-menu class="flyout-menu menu"><a href=/blog/ class="nav link"><i class="fa fa-home"></i>Home</a>
+<a href=/blog/posts/ class="nav link"><i class="far fa-newspaper"></i>Articles</a>
+<a href=/blog/categories/ class="nav link"><i class="fas fa-sitemap"></i>Categories</a>
+<a href=/blog/tags/ class="nav link"><i class="fas fa-tags"></i>Tags</a>
+<a href=https://jagijagijag1.github.io/tiny-notes/ class="nav link"><i class="fas fa-sticky-note"></i>Tiny Notes</a>
+<a href=#share-menu class="nav link share-toggle"><i class="fas fa-share-alt">&nbsp;</i>Share</a>
+<a href=#search-input class="nav link search-toggle"><i class="fas fa-search">&nbsp;</i>Search</a></menu>
+<a href=#search-input class="nav search-toggle"><i class="fas fa-search fa-2x">&nbsp;</i></a>
+<a href=#share-menu class="nav share-toggle"><i class="fas fa-share-alt fa-2x">&nbsp;</i></a>
+<a href=#site-nav class="nav nav-toggle"><i class="fas fa-bars fa-2x"></i></a></nav><menu id=search class=menu><input id=search-input class="search-input menu"></input><div id=search-results class="search-results menu"></div></menu><menu id=share-menu class="flyout-menu menu"><h1>Share Post</h1><a href="//twitter.com/share?text=Quarkus%20on%20AWS%20Lambda%e3%82%92%e8%a9%a6%e3%81%99&url=https%3a%2f%2fjagijagijag1.github.io%2fblog%2fposts%2f2021_05_15%2f" target=_blank rel=noopener class="nav share-btn twitter"><p>Twitter</p></a></menu></header><div id=wrapper><section id=site-intro><a href=/blog/><img src=https://jagijagijag1.github.io/blog/images/icon.png class=circle width=100 alt="my icon"></a><header><h1>jagijagijag1 tech note</h1></header><main></main><footer><ul class=socnet-icons><li><a href=//github.com/jagijagijag1 target=_blank rel=noopener title=GitHub class="fab fa-github"></a></li><li><a href=//twitter.com/jagijagijag1 target=_blank rel=noopener title=Twitter class="fab fa-twitter"></a></li><li><a href=//pixe.la/@jagijagijag1 target=_blank rel=noopener title=Pixela class="fas fa-th"></a></li></ul></footer></section><main id=site-main><article class=post><header><div class=title><h2><a href=/blog/posts/2021_05_15/>Quarkus on AWS Lambdaを試す</a></h2></div><div class=meta><time datetime="2021-05-15 20:53:05 +0900 +0900">May 15, 2021</time><p>jagijagijag1</p></div></header><div id=socnet-share><div><applause-button color=firebrick url=https://jagijagijag1.github.io/blog/posts/2021_05_15/ multiclap=true style="width: 55px; height: 55px; margin-right: 15px;"></div><a href="//twitter.com/share?text=Quarkus%20on%20AWS%20Lambda%e3%82%92%e8%a9%a6%e3%81%99&url=https%3a%2f%2fjagijagijag1.github.io%2fblog%2fposts%2f2021_05_15%2f" target=_blank rel=noopener class="nav share-btn twitter"><p>Twitter</p></a></div><div class=content><h2 id=環境>環境</h2><ul><li>OS: macOS Big Sur 11.3</li><li>Java: openjdk version &ldquo;15.0.2&rdquo; 2021-01-19</li><li>aws-cli/2.2.1</li><li>Docker 20.10.5</li><li>Apache Maven 3.8.1</li></ul><h2 id=aws提供javaランタイムを用いるlambda関数>AWS提供Javaランタイムを用いるLambda関数</h2><h3 id=プロジェクト作成>プロジェクト作成</h3><ul><li>適当な場所で下記コマンドを実行し，雛形生成<ul><li>途中，IDなど聞かれるので適当な値を入力</li></ul></li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ mvn archetype:generate <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>       -DarchetypeGroupId<span style=color:#f92672>=</span>io.quarkus <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>       -DarchetypeArtifactId<span style=color:#f92672>=</span>quarkus-amazon-lambda-archetype <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>       -DarchetypeVersion<span style=color:#f92672>=</span>1.13.3.Final
+...
+Define value <span style=color:#66d9ef>for</span> property <span style=color:#e6db74>&#39;groupId&#39;</span>: example
+Define value <span style=color:#66d9ef>for</span> property <span style=color:#e6db74>&#39;artifactId&#39;</span>: quarkus-lambda
+Define value <span style=color:#66d9ef>for</span> property <span style=color:#e6db74>&#39;version&#39;</span> 1.0-SNAPSHOT: : 
+Define value <span style=color:#66d9ef>for</span> property <span style=color:#e6db74>&#39;package&#39;</span> example: : 
+Confirm properties configuration:
+groupId: example
+artifactId: quarkus-lambda
+version: 1.0-SNAPSHOT
+package: example
+ Y: : 
+ ...
+</code></pre></div><ul><li>成功すると以下のような構造の雛形が生成される</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e># &#34;quarkus-lambda&#34;の部分は雛形生成時に指定したartifactId</span>
+$ tree quarkus-lambda
+quarkus-lambda
+├── build.gradle
+├── gradle.properties
+├── payload.json
+├── pom.xml
+├── settings.gradle
+└── src
+    ├── main
+    │   ├── java
+    │   │   └── example
+    │   │       ├── InputObject.java
+    │   │       ├── OutputObject.java
+    │   │       ├── ProcessingService.java
+    │   │       ├── StreamLambda.java
+    │   │       ├── TestLambda.java
+    │   │       └── UnusedLambda.java
+    │   └── resources
+    │       └── application.properties
+    └── test
+        ├── java
+        │   └── example
+        │       └── LambdaHandlerTest.java
+        └── resources
+            └── application.properties
+</code></pre></div><ul><li>生成されたディレクトリ(上記の例だと<code>quarkus-lambda</code>)に移動し，JARを生成<ul><li>成功すると<code>targets/</code>配下に，ビルド結果やLambda関数を管理するためのシェルスクリプト/SAMテンプレートが出力される</li></ul></li></ul><pre><code>$ mvn package
+</code></pre><h3 id=ローカル実行でテスト>ローカル実行でテスト</h3><ul><li>上記ビルドで，<code>targets/sam.jvm.yaml</code>にSAM用のテンプレートが生成されている<ul><li>これは<code>sam local invoke --template target/sam.jvm.yaml --event payload.json</code>でローカル実行可能</li></ul></li><li>しかし，このあと，API GatewayなしのLambda関数単体でAWSにデプロイしたいため，下記のsam templateを新たに作成</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yml:template.jvm.yml data-lang=yml:template.jvm.yml><span style=color:#f92672>AWSTemplateFormatVersion</span>: <span style=color:#e6db74>&#34;2010-09-09&#34;</span>
+<span style=color:#f92672>Transform</span>: <span style=color:#e6db74>&#34;AWS::Serverless-2016-10-31&#34;</span>
+<span style=color:#f92672>Description</span>: <span style=color:#ae81ff>Quarkus Lambda function.</span>
+<span style=color:#f92672>Resources</span>:
+  <span style=color:#f92672>function</span>:
+    <span style=color:#f92672>Type</span>: <span style=color:#ae81ff>AWS::Serverless::Function</span>
+    <span style=color:#f92672>Properties</span>:
+      <span style=color:#f92672>CodeUri</span>: <span style=color:#ae81ff>target/function.zip</span>
+      <span style=color:#f92672>Handler</span>: <span style=color:#ae81ff>io.quarkus.amazon.lambda.runtime.QuarkusStreamHandler::handleRequest</span>
+      <span style=color:#f92672>Runtime</span>: <span style=color:#ae81ff>java11</span>
+      <span style=color:#f92672>Description</span>: <span style=color:#ae81ff>Java function</span>
+      <span style=color:#f92672>MemorySize</span>: <span style=color:#ae81ff>128</span>
+      <span style=color:#f92672>Timeout</span>: <span style=color:#ae81ff>15</span>
+      <span style=color:#75715e># Function&#39;s execution role</span>
+      <span style=color:#f92672>Policies</span>:
+        - <span style=color:#ae81ff>AWSLambdaBasicExecutionRole</span>
+        - <span style=color:#ae81ff>AWSLambda_ReadOnlyAccess</span>
+        - <span style=color:#ae81ff>AWSXrayWriteOnlyAccess</span>
+        - <span style=color:#ae81ff>AWSLambdaVPCAccessExecutionRole</span>
+      <span style=color:#f92672>Tracing</span>: <span style=color:#ae81ff>Active</span>
+</code></pre></div><ul><li>上記テンプレートとテスト用データ<code>payload.json</code>を用い，Lambda関数をローカル実行<ul><li>要Docker</li><li>最後の部分のレスポンスが想定どおりであることを確認</li></ul></li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ sam local invoke --template template.jvm.yml --event payload.json
+Invoking io.quarkus.amazon.lambda.runtime.QuarkusStreamHandler::handleRequest <span style=color:#f92672>(</span>java11<span style=color:#f92672>)</span>
+Decompressing /Users/ryo/work/java/java-sandbox/quarkus-lambda/target/function.zip
+Skip pulling image and use local one: amazon/aws-sam-cli-emulation-image-java11:rapid-1.23.0.
+
+Mounting /private/var/folders/_7/m8bf5d2n6cj5xg9ptdvsry5m0000gn/T/tmpmyw_yeut as /var/task:ro,delegated inside runtime container
+__  ____  __  _____   ___  __ ____  ______ 
+ --/ __ <span style=color:#ae81ff>\/</span> / / / _ | / _ <span style=color:#ae81ff>\/</span> //_/ / / / __/ 
+ -/ /_/ / /_/ / __ |/ , _/ ,&lt; / /_/ /<span style=color:#ae81ff>\ \ </span>  
+--<span style=color:#ae81ff>\_</span>__<span style=color:#ae81ff>\_\_</span>___/_/ |_/_/|_/_/|_|<span style=color:#ae81ff>\_</span>___/___/   
+2021-05-11 13:23:01,986 INFO  <span style=color:#f92672>[</span>io.quarkus<span style=color:#f92672>]</span> <span style=color:#f92672>(</span>main<span style=color:#f92672>)</span> quarkus-lambda 1.0-SNAPSHOT on JVM <span style=color:#f92672>(</span>powered by Quarkus 1.13.3.Final<span style=color:#f92672>)</span> started in 2.167s. 
+2021-05-11 13:23:01,989 INFO  <span style=color:#f92672>[</span>io.quarkus<span style=color:#f92672>]</span> <span style=color:#f92672>(</span>main<span style=color:#f92672>)</span> Profile prod activated. 
+2021-05-11 13:23:01,989 INFO  <span style=color:#f92672>[</span>io.quarkus<span style=color:#f92672>]</span> <span style=color:#f92672>(</span>main<span style=color:#f92672>)</span> Installed features: <span style=color:#f92672>[</span>amazon-lambda, cdi<span style=color:#f92672>]</span>
+END RequestId: 6191b111-bf3b-4f40-9b3a-15d4f7364969
+REPORT RequestId: 6191b111-bf3b-4f40-9b3a-15d4f7364969  Init Duration: 0.74 ms  Duration: 2513.93 ms    Billed Duration: <span style=color:#ae81ff>2600</span> ms        Memory Size: <span style=color:#ae81ff>512</span> MB      Max Memory Used: <span style=color:#ae81ff>512</span> MB
+<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;result&#34;</span>:<span style=color:#e6db74>&#34;hello Bill&#34;</span>,<span style=color:#e6db74>&#34;requestId&#34;</span>:<span style=color:#e6db74>&#34;6191b111-bf3b-4f40-9b3a-15d4f7364969&#34;</span><span style=color:#f92672>}</span>
+</code></pre></div><h3 id=デプロイしてテスト>デプロイしてテスト</h3><ul><li><code>sam deploy</code>する (事前にzipアップロード用のS3バケットを用意)</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ sam deploy --template template.jvm.yml --stack-name quarkus-lambda-test --capabilities CAPABILITY_IAM --s3-bucket &lt;your-bucket-name&gt;
+</code></pre></div><ul><li>デプロイ成功したら，AWS CLIから実行してみる</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ aws lambda invoke --function-name &lt;your-function-name&gt; --payload <span style=color:#e6db74>&#39;{&#34;name&#34;: &#34;jagijagijag1&#34;, &#34;greeting&#34;: &#34;Hi!&#34;}&#39;</span> response.json --cli-binary-format raw-in-base64-out
+</code></pre></div><ul><li>実行が成功すると，<code>response.json</code>ファイルが出力される</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json:response.json data-lang=json:response.json>{<span style=color:#f92672>&#34;result&#34;</span>:<span style=color:#e6db74>&#34;Hi! jagijagijag1&#34;</span>,<span style=color:#f92672>&#34;requestId&#34;</span>:<span style=color:#e6db74>&#34;845fc222-8947-4fc1-a899-4f6a7c4b42ad&#34;</span>}
+</code></pre></div><ul><li>AWSマネジメントコンソールなどからトレースを確認可能<ul><li>今回の場合，コールドスタートの初回起動に約1.7秒かかった (Javaの割に短い?)</li></ul></li></ul><p><img src=/blog/posts/2021_05_15/cc3f9d32.png alt=cc3f9d32.png></p><h2 id=ネイティブコンパイルカスタムランタイムを用いるlambda関数>ネイティブコンパイル&カスタムランタイムを用いるLambda関数</h2><h3 id=コンパイル>コンパイル</h3><ul><li>プロジェクトはJVM利用版と同じものを利用</li><li>下記コマンドでネイティブイメージ&カスタムランタイム生成<ul><li>macOSにはGraalVMを入れず，Dockerコンテナ上でコンパイルするため<code>-Dquarkus.native.container-build=true</code>オプションを付与</li><li>3分半くらいで完了 (Micornautのときは10分以上かかった…)</li></ul></li></ul><pre><code>$ mvn package -Pnative -Dquarkus.native.container-build=true
+</code></pre><h3 id=ローカル実行でテスト-1>ローカル実行でテスト</h3><ul><li>上記ビルドで，<code>targets/sam.native.yaml</code>にSAM用のテンプレートが生成されている<ul><li>これは<code>sam local invoke --template target/sam.native.yaml --event payload.json</code>でローカル実行可能</li></ul></li><li>JVM利用の場合と同様，API Gateway不要なので下記のsam templateを新たに作成</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yml:template.native.yml data-lang=yml:template.native.yml><span style=color:#f92672>AWSTemplateFormatVersion</span>: <span style=color:#e6db74>&#34;2010-09-09&#34;</span>
+<span style=color:#f92672>Transform</span>: <span style=color:#e6db74>&#34;AWS::Serverless-2016-10-31&#34;</span>
+<span style=color:#f92672>Description</span>: <span style=color:#ae81ff>Quarkus Lambda function.</span>
+<span style=color:#f92672>Resources</span>:
+  <span style=color:#f92672>function</span>:
+    <span style=color:#f92672>Type</span>: <span style=color:#ae81ff>AWS::Serverless::Function</span>
+    <span style=color:#f92672>Properties</span>:
+      <span style=color:#f92672>Handler</span>: <span style=color:#ae81ff>not.used.in.provided.runtime</span>
+      <span style=color:#f92672>Runtime</span>: <span style=color:#ae81ff>provided</span>
+      <span style=color:#f92672>CodeUri</span>: <span style=color:#ae81ff>target/function.zip</span>
+      <span style=color:#f92672>Description</span>: <span style=color:#ae81ff>Java function</span>
+      <span style=color:#f92672>MemorySize</span>: <span style=color:#ae81ff>128</span>
+      <span style=color:#f92672>Timeout</span>: <span style=color:#ae81ff>15</span>
+      <span style=color:#75715e># Function&#39;s execution role</span>
+      <span style=color:#f92672>Policies</span>:
+        - <span style=color:#ae81ff>AWSLambdaBasicExecutionRole</span>
+        - <span style=color:#ae81ff>AWSLambda_ReadOnlyAccess</span>
+        - <span style=color:#ae81ff>AWSXrayWriteOnlyAccess</span>
+        - <span style=color:#ae81ff>AWSLambdaVPCAccessExecutionRole</span>
+      <span style=color:#f92672>Tracing</span>: <span style=color:#ae81ff>Active</span>
+</code></pre></div><ul><li>上記テンプレートとテスト用データ<code>payload.json</code>を用い，Lambda関数をローカル実行<ul><li>要Docker</li><li>最後の部分のレスポンスが想定どおりであることを確認</li></ul></li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ sam local invoke --template template.native.yml --event payload.json
+Invoking not.used.in.provided.runtime <span style=color:#f92672>(</span>provided<span style=color:#f92672>)</span>
+Decompressing /Users/ryo/work/java/java-sandbox/quarkus-lambda/target/function.zip
+Skip pulling image and use local one: amazon/aws-sam-cli-emulation-image-provided:rapid-1.23.0.
+
+Mounting /private/var/folders/_7/m8bf5d2n6cj5xg9ptdvsry5m0000gn/T/tmp64k4ia2x as /var/task:ro,delegated inside runtime container
+START RequestId: 3154344c-5cb3-4dc6-abcf-da47457853c8 Version: $LATEST
+__  ____  __  _____   ___  __ ____  ______ 
+ --/ __ <span style=color:#ae81ff>\/</span> / / / _ | / _ <span style=color:#ae81ff>\/</span> //_/ / / / __/ 
+ -/ /_/ / /_/ / __ |/ , _/ ,&lt; / /_/ /<span style=color:#ae81ff>\ \ </span>  
+--<span style=color:#ae81ff>\_</span>__<span style=color:#ae81ff>\_\_</span>___/_/ |_/_/|_/_/|_|<span style=color:#ae81ff>\_</span>___/___/   
+2021-05-13 11:33:59,841 INFO  <span style=color:#f92672>[</span>io.quarkus<span style=color:#f92672>]</span> <span style=color:#f92672>(</span>main<span style=color:#f92672>)</span> quarkus-lambda 1.0-SNAPSHOT native <span style=color:#f92672>(</span>powered by Quarkus 1.13.3.Final<span style=color:#f92672>)</span> started in 0.135s. 
+2021-05-13 11:33:59,846 INFO  <span style=color:#f92672>[</span>io.quarkus<span style=color:#f92672>]</span> <span style=color:#f92672>(</span>main<span style=color:#f92672>)</span> Profile prod activated. 
+2021-05-13 11:33:59,846 INFO  <span style=color:#f92672>[</span>io.quarkus<span style=color:#f92672>]</span> <span style=color:#f92672>(</span>main<span style=color:#f92672>)</span> Installed features: <span style=color:#f92672>[</span>amazon-lambda, cdi<span style=color:#f92672>]</span>
+END RequestId: 3154344c-5cb3-4dc6-abcf-da47457853c8
+REPORT RequestId: 3154344c-5cb3-4dc6-abcf-da47457853c8  Init Duration: 1.23 ms  Duration: 312.86 ms     Billed Duration: <span style=color:#ae81ff>400</span> ms Memory Size: <span style=color:#ae81ff>128</span> MB      Max Memory Used: <span style=color:#ae81ff>128</span> MB
+<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;result&#34;</span>:<span style=color:#e6db74>&#34;hello Bill&#34;</span>,<span style=color:#e6db74>&#34;requestId&#34;</span>:<span style=color:#e6db74>&#34;3154344c-5cb3-4dc6-abcf-da47457853c8&#34;</span><span style=color:#f92672>}</span>
+</code></pre></div><h3 id=デプロイしてテスト-1>デプロイしてテスト</h3><ul><li><code>sam deploy</code>する (事前にzipアップロード用のS3バケットを用意)</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ sam deploy --template template.native.yml --stack-name quarkus-lambda-test --capabilities CAPABILITY_IAM --s3-bucket &lt;your-bucket-name&gt;
+</code></pre></div><ul><li>デプロイ成功したら，AWS CLIから実行してみる</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ aws lambda invoke --function-name &lt;your-function-name&gt; --payload <span style=color:#e6db74>&#39;{&#34;name&#34;: &#34;jagijagijag1&#34;, &#34;greeting&#34;: &#34;Hey!&#34;}&#39;</span> response.json --cli-binary-format raw-in-base64-out
+</code></pre></div><ul><li>実行が成功すると，<code>response.json</code>ファイルが出力される</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json:response.json data-lang=json:response.json>{<span style=color:#f92672>&#34;result&#34;</span>:<span style=color:#e6db74>&#34;Hey! jagijagijag1&#34;</span>,<span style=color:#f92672>&#34;requestId&#34;</span>:<span style=color:#e6db74>&#34;12fd7a80-6cc6-42c9-bd2a-e85d935130df&#34;</span>}
+</code></pre></div><ul><li>AWSマネジメントコンソールなどからトレースを確認可能<ul><li>ネイティブイメージにより，コールドスタートの初回起動が約0.2秒に短縮された</li></ul></li></ul><p><img src=/blog/posts/2021_05_15/c25d6394.png alt=c25d6394.png></p></div><footer><div class=stats><ul class=categories><li><a class=article-terms-link href=/blog/categories/dev-note/>dev-note</a></li></ul><ul class=tags><li><a class=article-terms-link href=/blog/tags/aws/>AWS</a></li><li><a class=article-terms-link href=/blog/tags/serverless/>serverless</a></li><li><a class=article-terms-link href=/blog/tags/java/>Java</a></li><li><a class=article-terms-link href=/blog/tags/lambda/>Lambda</a></li><li><a class=article-terms-link href=/blog/tags/quarkus/>Quarkus</a></li></ul></div></footer></article><article class=post><div><h2 id=say-something>Say Something</h2><form id=comment-form class=new-comment method=post><h3 class="reply-notice hidden"><span class=reply-name></span></h3><input type=hidden name=options[entryId] value=88926648f1eff08b98cf4065c5661d40>
+<input type=hidden name=fields[replyThread]>
+<input type=hidden name=fields[replyID]>
+<input type=hidden name=fields[replyName]>
+<input required name=fields[name] type=text placeholder="Your Name">
+<input name=fields[website] type=text placeholder="Your Website">
+<input required name=fields[email] type=email placeholder="Your Email">
+<textarea required name=fields[body] placeholder="Your Message" rows=10></textarea><div class=submit-notice><strong class="submit-notice-text submit-success hidden">Thanks for your comment! It will be shown on the site once it has been approved.</strong>
+<strong class="submit-notice-text submit-failed hidden">Sorry, there was an error with your submission. Please make sure all required fields have been completed and try again.</strong></div><input type=submit value=Submit class=button>
+<input type=submit value=Submitted class="hidden button" disabled>
+<input type=reset value=Reset class=button></form></div><div><h2>Comments</h2></div></article><div class=pagination><a href=/blog/posts/2021_05_04/ class="button right"><span>Micronaut on AWS Lambdaを試す</span></a></div></main><section id=site-sidebar><section id=recent-posts><header><h1>Recent Posts</h1></header><article class=mini-post><header><h2><a href=/blog/posts/2021_05_15/>Quarkus on AWS Lambdaを試す</a></h2><time class=published datetime="2021-05-15 20:53:05 +0900 +0900">May 15, 2021</time></header></article><article class=mini-post><header><h2><a href=/blog/posts/2021_05_04/>Micronaut on AWS Lambdaを試す</a></h2><time class=published datetime="2021-05-04 19:53:56 +0900 +0900">May 4, 2021</time></header></article><article class=mini-post><header><h2><a href=/blog/posts/2021_04_18/-indexx/>AWS botocore `CreateNetworkAclEntry`の例の誤り</a></h2><time class=published datetime="2021-04-18 22:27:02 +0900 +0900">April 18, 2021</time></header></article><footer><a href=/blog/posts/ class=button>See More</a></footer></section><section id=categories><header><h1><a href=/blog/categories>Categories</a></h1></header><ul><li><a href=/blog/categories/dev-note/>dev-note<span class=count>13</span></a><li><a href=/blog/categories/trouble-note/>trouble-note<span class=count>3</span></a><li><a href=/blog/categories/tech-note/>tech-note<span class=count>1</span></a></li></ul></section><section id=pixela_access_counter><header><h1>Blog PVs</h1></header><div id=svg-load-area style="border:1px solid rgba(161,161,161,.3)"></div><div style=text-align:right>Powered by <a href=https://pixe.la/ target=_blank>Pixela</a></div></section><script src=https://unpkg.com/tippy.js@3/dist/tippy.all.min.js></script><script>document.addEventListener('DOMContentLoaded',function(){$('#svg-load-area').load('https:\/\/pixe.la\/v1\/users\/jagijagijag1\/graphs\/qrunch-pv?mode=short',function(){tippy('.each-day',{arrow:true});});});</script></section><footer id=site-footer><ul class=socnet-icons><li><a href=//github.com/jagijagijag1 target=_blank rel=noopener title=GitHub class="fab fa-github"></a></li><li><a href=//twitter.com/jagijagijag1 target=_blank rel=noopener title=Twitter class="fab fa-twitter"></a></li><li><a href=//pixe.la/@jagijagijag1 target=_blank rel=noopener title=Pixela class="fas fa-th"></a></li></ul><p class=copyright>© 2021 jagijagijag1 notes<br>Theme: <a href=https://github.com/pacollins/hugo-future-imperfect-slim target=_blank rel=noopener>Hugo Future Imperfect Slim</a><br>A <a href=https://html5up.net/future-imperfect target=_blank rel=noopener>HTML5 UP port</a> | Powered by <a href=https://gohugo.io/ title=0.75.1 target=_blank rel=noopener>Hugo</a></p></footer><a id=back-to-top href=# class="fas fa-arrow-up fa-2x"></a><script src=/blog/js/highlight.js></script><script>hljs.initHighlightingOnLoad();</script><script src=/blog/js/bundle.min.5955090a3253deadcd66071270aa2274dabe15ffc97094cec252d87b6f3f00bf.js integrity="sha256-WVUJCjJT3q3NZgcScKoidNq+Ff/JcJTOwlLYe28/AL8="></script><script src=/blog/js/add-on.js></script><script type=application/javascript>var doNotTrack=false;if(!doNotTrack){window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;ga('create','UA-22200830-1','auto');ga('send','pageview');}</script><script async src=https://www.google-analytics.com/analytics.js></script></div></body></html>
